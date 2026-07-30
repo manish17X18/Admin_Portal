@@ -12,7 +12,7 @@ const getAdminClient = async () => {
             username: process.env.KEYCLOAK_ADMIN_USER, //     
             password: process.env.KEYCLOAK_ADMIN_PASSWORD, 
             grantType: 'password',   
-            clientId: 'admin-cli',
+            clientId: 'admin-cli', //client name or id
             realmName: 'master' // or your realm name if admin1 was created in your custom realm
         });
         return kcAdminClient;
