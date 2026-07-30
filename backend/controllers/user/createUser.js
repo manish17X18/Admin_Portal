@@ -20,9 +20,10 @@ exports.createUser = async (req, res) => {
                 name: role.trim(), // e.g. "teacher", "student", or lowercase matching your realm setup
             });
         } catch (err) {
+            //if it does not find the role it will throw an error and we will catch it here
             console.error(`Role search failed for: ${role}`);
         }
-
+        //role not created by admin yet 
         if (!targetRole) {
             return res.status(400).json({
                 success: false,
@@ -41,6 +42,17 @@ exports.createUser = async (req, res) => {
             }
         })
         
+        //used to assign the role to the user
+        await kcClient.users.addRealmRoleMappings({
+            realm: process.env.KEYCLOAK_REALM,
+            id: newUser.id,
+            roles: [
+                {
+                    id: targetRole.id,
+                    name: targetRole.name,
+                },
+            ],
+        });
         res.status(201).json({
             success: true,
             message: `User '${name}' created successfully in Keycloak!`,
