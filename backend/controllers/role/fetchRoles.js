@@ -13,7 +13,9 @@ exports.getRoles=async(req,res)=>{
             .filter(role => 
                 !role.name.startsWith('default-roles') && 
                 role.name !== 'offline_access' && 
-                role.name !== 'uma_authorization'
+                role.name !== 'uma_authorization' &&
+                role.name !== 'admin' &&
+                role.name !=='create-realm' 
             )
             .map(role => ({
                 id: role.id,
