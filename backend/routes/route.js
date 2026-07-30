@@ -4,15 +4,28 @@ const router=express.Router();
 const {createUser}=require('../controllers/user/createUser')
 const {getusers}=require('../controllers/user/fetchUsers')
 const {deleteUser}=require('../controllers/user/deleteUser')
+const {editUser}=require('../controllers/user/editUser')
 
 const {getRoles}=require('../controllers/role/fetchRoles')
 const {createRole}=require('../controllers/role/addRole')
+const {deleteRole}=require('../controllers/role/deleteRole')
+
+const {createAdmin}=require('../controllers/admin/addAdmin')
+const {getAdmins}=require('../controllers/admin/getAdmin')
+
+const {login}=require('../controllers/auth/login')
 
 router.post('/createUser',createUser)
 router.get('/getusers',getusers)
 router.delete('/deleteUser',deleteUser)
+router.put('/editUser',editUser)
 
 router.get('/getRoles',getRoles);
 router.post('/addRole',createRole);
+router.delete('/deleteRole',deleteRole)
 
+router.post('/createAdmin',createAdmin)
+router.get('/getAdmins',getAdmins)
+
+router.post('/login',login)
 module.exports=router
