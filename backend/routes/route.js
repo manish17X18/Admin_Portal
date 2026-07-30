@@ -15,6 +15,9 @@ const {getAdmins}=require('../controllers/admin/getAdmin')
 
 const {login}=require('../controllers/auth/login')
 
+const { getDashboardStats } = require('../controllers/dashboard_stats/dashboardController');
+
+
 router.post('/createUser',createUser)
 router.get('/getusers',getusers)
 router.delete('/deleteUser',deleteUser)
@@ -28,4 +31,6 @@ router.post('/createAdmin',createAdmin)
 router.get('/getAdmins',getAdmins)
 
 router.post('/login',login)
+
+router.get('/dashboardStats', getDashboardStats);
 module.exports=router
