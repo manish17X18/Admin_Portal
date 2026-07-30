@@ -1,27 +1,68 @@
-import React from 'react'
-import image from '../assets/lock.png'
-import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { login } from '../features/Signin'
+import React, { useState } from 'react';
+import image from '../assets/lock.png';
+import { useSelector, useDispatch } from 'react-redux';
+import { login } from '../features/Signin';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import axios from 'axios';
+import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 
 const SignIn = () => {
-  const { isLoggedIn } = useSelector((state) => state.signin)
-  const dispatch = useDispatch()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const { isLoggedIn } = useSelector((state) => state.signin);
+  const dispatch = useDispatch();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
-  function submitHandler(e) {
-    e.preventDefault()
-    console.log({ email, password })
-    console.log(isLoggedIn)
-    dispatch(login())
-    console.log(isLoggedIn)
-    setEmail('')
-    setPassword('')
-  }
+  const submitHandler = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-  //go to dashbord page after sign in
-  //connect with backend
+    try {
+      // 1. Call Express login API
+      const response = await axios.post('http://localhost:5000/api/v1/login', {
+        email,
+        password,
+      });
+
+      if (response.data?.success) {
+        // 2. Save JWT Token and User Profile in localStorage
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('adminUser', JSON.stringify(response.data.user));
+
+        // 3. Set default Authorization Header for all subsequent API requests
+        axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
+
+        // 4. Update Redux store
+        dispatch(login(response.data.user));
+
+        toast.success(response.data.message || 'Logged in successfully!', {
+          position: 'top-right',
+          autoClose: 3000,
+        });
+
+        // 5. Reset inputs & Navigate to Users dashboard
+        setEmail('');
+        setPassword('');
+        navigate('/users');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      const errorMessage =
+        error.response?.data?.message ||
+        error.response?.data?.error ||
+        'Failed to log in. Please check your credentials.';
+
+      toast.error(errorMessage, {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-linear-to-b from-[#6B9DFE] via-[#82B1FF] to-[#A2DBFF] p-4">
@@ -68,35 +109,26 @@ const SignIn = () => {
               Password
               <div className="relative mt-1">
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   required
                   className="w-full h-12 pl-4 pr-11 border border-gray-200 rounded-2xl text-gray-700 bg-white placeholder:text-gray-400 placeholder:font-normal focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all shadow-sm"
                   placeholder="Enter Your Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                {/* Visual Eye Icon matching design */}
-                <div className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth={1.5}
-                    stroke="currentColor"
-                    className="w-5 h-5"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                    />
-                  </svg>
-                </div>
+
+                {/* Password Toggle Eye Icon */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer focus:outline-none"
+                >
+                  {showPassword ? (
+                    <IoEyeOffOutline className="w-5 h-5" />
+                  ) : (
+                    <IoEyeOutline className="w-5 h-5" />
+                  )}
+                </button>
               </div>
             </label>
           </div>
@@ -111,14 +143,15 @@ const SignIn = () => {
           {/* Sign In Button */}
           <button
             type="submit"
-            className="w-full h-12 bg-[#3B82F6] hover:bg-blue-600 rounded-2xl text-white font-semibold text-base transition-all duration-200 hover:cursor-pointer shadow-md active:scale-[0.98] mt-2 flex items-center justify-center"
+            disabled={loading}
+            className="w-full h-12 bg-[#3B82F6] hover:bg-blue-600 rounded-2xl text-white font-semibold text-base transition-all duration-200 hover:cursor-pointer shadow-md active:scale-[0.98] mt-2 flex items-center justify-center disabled:opacity-60"
           >
-            Sign In
+            {loading ? 'Authenticating...' : 'Sign In'}
           </button>
         </form>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default SignIn
+export default SignIn;
