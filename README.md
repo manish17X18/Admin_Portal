@@ -21,7 +21,7 @@ An enterprise-grade Admin Dashboard and User Management Portal built with React,
 ## Keycloak Database Configuration
 
 After downloading and extracting Keycloak, update the Keycloak database configuration with your MySQL credentials.
-path->downloaded file in folder(keycloak)->conf folder->keycloak.conf file.
+* path->downloaded file in folder(keycloak)->conf folder->keycloak.conf file.
 ```properties
 db=mysql
 db-username=keycloak
