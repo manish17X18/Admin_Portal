@@ -18,6 +18,20 @@ An enterprise-grade Admin Dashboard and User Management Portal built with React,
 
 ---
 
+## Keycloak Database Configuration
+
+After downloading and extracting Keycloak, update the Keycloak database configuration with your MySQL credentials.
+path->downloaded file in folder(keycloak)->conf folder->keycloak.conf file.
+```properties
+db=mysql
+db-username=keycloak
+db-password=your mysql password
+db-url=jdbc:mysql://localhost:3306/keycloak
+```
+
+> **Note:** Change `db-username`, `db-password`, and `db-url` according to your local MySQL setup.
+
+
 ## Features
 
 * Secure Keycloak Authentication: Direct Access Grant token authentication via Keycloak's OpenID Connect `/token` endpoint.
