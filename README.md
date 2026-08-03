@@ -57,6 +57,8 @@ KEYCLOAK_URL=http://localhost:8080
 KEYCLOAK_REALM=your-realm-name
 KEYCLOAK_CLIENT_ID=your-client-id
 KEYCLOAK_CLIENT_SECRET=your-client-secret
+KEYCLOAK_ADMIN_USER=login username of keycloak
+KEYCLOAK_ADMIN_PASSWORD=your keycloak login password
 
 ### 2. Frontend Environment (`frontend/.env`)
 Create a `.env` file inside the `frontend` folder:
