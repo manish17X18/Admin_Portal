@@ -14,10 +14,12 @@ import {
     Pie,
     Cell
 } from 'recharts';
-
+import { RealmContext } from '../components/RealmContext';
+import { useContext } from 'react';
 const ROLE_COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#6366F1', '#EC4899', '#8B5CF6'];
 
 const Dashboard = () => {
+    const { activeRealm } = useContext(RealmContext);
     const [timeframe, setTimeframe] = useState('Last 7 days');
     const [loading, setLoading] = useState(true);
 
@@ -48,7 +50,7 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/api/v1/dashboardStats', {
+                const response = await axios.get(`http://localhost:5000/api/v1/dashboardStats?realm=${activeRealm}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
