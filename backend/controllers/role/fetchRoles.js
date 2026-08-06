@@ -1,11 +1,15 @@
 const {getAdminClient}=require('../../config/database');
+const getTargetRealm=require('../realms/helper')
+
 require('dotenv').config();
 exports.getRoles=async(req,res)=>{
     try {
         const kcClient=await getAdminClient();
-
+        const realm = getTargetRealm(req);
         //fetch all roles
-        const allRoles=await kcClient.roles.find()
+        const allRoles=await kcClient.roles.find({
+            realm: realm
+        })
         // console.log("Raw Keycloak Roles fetched:", allRoles);
 
         // filter out Keycloak default system roles
