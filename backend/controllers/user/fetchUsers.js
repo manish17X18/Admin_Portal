@@ -1,11 +1,13 @@
 const { getAdminClient } = require('../../config/database');
+const getTargetRealm=require('../realms/helper')
 
 exports.getusers = async (req, res) => {
     try {
+        const realm = getTargetRealm(req);
         const kcClient = await getAdminClient();
         //fetch all users from keycloak from that realm
         const users = await kcClient.users.find({
-            realm: process.env.KEYCLOAK_REALM,
+            realm: realm,
         });
 
         // 1. Initial basic check for default admin user
@@ -20,7 +22,7 @@ exports.getusers = async (req, res) => {
                 nonAdminUsers.map(async (user) => {
                     // Fetch assigned realm roles for each user
                     const roleMappings = await kcClient.users.listRealmRoleMappings({
-                        realm: process.env.KEYCLOAK_REALM,
+                        realm: realm,
                         id: user.id,
                     });
 
