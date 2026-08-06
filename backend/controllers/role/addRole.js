@@ -1,4 +1,6 @@
 const {getAdminClient} = require('../../config/database')
+const getTargetRealm=require('../realms/helper')
+
 exports.createRole = async (req, res) => {
     try {
         const {role,description}=req.body;
@@ -8,12 +10,14 @@ exports.createRole = async (req, res) => {
                 message:"Fill role",
             })
         }
+        const realm = getTargetRealm(req);
         const kcClient=await getAdminClient();
         const roleName = role.trim();
 
         let roleExists=null;
         try {
             roleExists=await kcClient.roles.findOneByName({
+                realm: realm,
                 name:roleName
             })
         } catch (error) {
@@ -27,6 +31,7 @@ exports.createRole = async (req, res) => {
         }
 
         await kcClient.roles.create({
+            realm: realm,
             name:roleName,
             description:description||"",
         })
