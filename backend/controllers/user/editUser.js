@@ -1,8 +1,10 @@
 const { getAdminClient } = require('../../config/database');
+const getTargetRealm=require('../realms/helper')
 
 exports.editUser = async (req, res) => {
     try {
         const kcClient = await getAdminClient();
+        const realm = getTargetRealm(req);
         const userId = req.params.userId || req.body.id;
         const { phNo, role } = req.body;
         if (!userId) {
