@@ -1,8 +1,10 @@
 const { getAdminClient } = require('../../config/database');
+const getTargetRealm=require('../realms/helper')
 
 exports.deleteRole = async (req, res) => {
     try {
         const kcClient = await getAdminClient();
+        const realm = getTargetRealm(req);
         const roleName = req.body.roleName || req.body.role || req.body.name;
         if (!roleName || !roleName.trim()) {
             return res.status(404).json({
@@ -24,6 +26,7 @@ exports.deleteRole = async (req, res) => {
 
         try {
             roleFound = await kcClient.roles.findOneByName({
+                realm: realm,
                 name: targetRoleName
             })
         } catch (error) {
@@ -38,6 +41,7 @@ exports.deleteRole = async (req, res) => {
         }
         //check if any users are assigned to this role
         const assignedUsers = await kcClient.roles.findUsersWithRole({
+            realm: realm,
             name: targetRoleName,
         });
 
@@ -52,6 +56,7 @@ exports.deleteRole = async (req, res) => {
         }
 
         await kcClient.roles.delByName({
+            realm: realm,
             name: targetRoleName
         })
         res.status(200).json({
