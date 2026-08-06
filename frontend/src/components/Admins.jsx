@@ -38,7 +38,7 @@ const Admins = () => {
     const fetchAdmins = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/v1/getAdmins');
+            const response = await axios.get('http://localhost:5000/api/v1/getAdmins?realm=master');
             if (response.data?.success) {
                 setAdminList(response.data.admins || response.data.users || []);
             }
@@ -62,7 +62,7 @@ const Admins = () => {
                 role: 'admin'
             };
 
-            const response = await axios.post('http://localhost:5000/api/v1/createAdmin', adminPayload);
+            const response = await axios.post('http://localhost:5000/api/v1/createAdmin?realm=master', adminPayload);
             
             if (response.data?.success) {
                 toast.success(response.data.message || "Admin added successfully!");
