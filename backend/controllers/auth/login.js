@@ -1,13 +1,33 @@
 const { getAdminClient } = require('../../config/database');
 const axios = require('axios');
+
 exports.login = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password, captchaToken } = req.body; // 1. Extract captchaToken
 
         if (!email || !password) {
             return res.status(400).json({
                 success: false,
                 message: "Email and password are required.",
+            });
+        }
+
+        // 2. Validate captcha Token
+        if (!captchaToken) {
+            return res.status(400).json({
+                success: false,
+                message: "reCAPTCHA verification token is missing.",
+            });
+        }
+
+        // 3. Verify captcha Token with Google
+        const googleVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
+        const googleRes = await axios.post(googleVerifyUrl);
+
+        if (!googleRes.data?.success) {
+            return res.status(400).json({
+                success: false,
+                message: "reCAPTCHA verification failed. Please try again.",
             });
         }
 
@@ -24,7 +44,7 @@ exports.login = async (req, res) => {
             });
         }
 
-        //  Verify if the user has the 'admin' realm role
+        // Verify if the user has the 'admin' realm role
         const roleMappings = await kcClient.users.listRealmRoleMappings({ id: userExists.id });
         const isUserAdmin = roleMappings.some((r) => r.name.toLowerCase() === 'admin');
 
@@ -55,11 +75,10 @@ exports.login = async (req, res) => {
         } catch (authError) {
             return res.status(401).json({
                 success: false,
-                message:authError.message,
+                message: authError.message,
             });
         }
 
-        // 4. Return Success Response with JWT Token
         return res.status(200).json({
             success: true,
             message: "Login Successful",
