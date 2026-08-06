@@ -1,4 +1,5 @@
 const { getAdminClient } = require('../../config/database')
+const getTargetRealm=require('../realms/helper')
 
 exports.createUser = async (req, res) => {
     try {
@@ -12,11 +13,12 @@ exports.createUser = async (req, res) => {
             })
         }
         console.log(req.body.phNo)
+        const realm=getTargetRealm(req)
         const kcClient = await getAdminClient()
         let targetRole = null;
         try {
             targetRole = await kcClient.roles.findOneByName({
-                realm: process.env.KEYCLOAK_REALM,
+                realm:realm,
                 name: role.trim(), // e.g. "teacher", "student", or lowercase matching your realm setup
             });
         } catch (err) {
@@ -32,7 +34,7 @@ exports.createUser = async (req, res) => {
         }
         //send the data to keycloak it will directly store it into 
         const newUser = await kcClient.users.create({
-            realm: process.env.KEYCLOAK_REALM,
+            realm: realm,
             username: email,
             email: email,
             enabled: true,
@@ -44,7 +46,7 @@ exports.createUser = async (req, res) => {
         
         //used to assign the role to the user
         await kcClient.users.addRealmRoleMappings({
-            realm: process.env.KEYCLOAK_REALM,
+            realm:realm,
             id: newUser.id,
             roles: [
                 {
