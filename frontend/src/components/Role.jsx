@@ -6,8 +6,11 @@ import { IoIosArrowForward } from 'react-icons/io';
 import { CiSearch } from 'react-icons/ci';
 import { MdDelete } from "react-icons/md";
 import axios from 'axios';
-
+import { RealmContext } from '../components/RealmContext';
+import { useContext } from 'react';
 const RolesManager = () => {
+    const { activeRealm } = useContext(RealmContext);
+
     // 1. Search Query Sync with URL
     const [searchParams, setSearchParams] = useSearchParams();
     const searchQuery = searchParams.get('search') || '';
@@ -36,7 +39,7 @@ const RolesManager = () => {
     const fetchRoles = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/v1/getRoles');
+            const response = await axios.get(`http://localhost:5000/api/v1/getRoles?realm=${activeRealm}`);
             if (response.data?.success) {
                 setRolesList(response.data.roles);
             }
@@ -75,7 +78,7 @@ const RolesManager = () => {
 
         try {
             // Optional: Connect your backend POST endpoint here once ready
-            const res = await axios.post('http://localhost:5000/api/v1/addRole', newRoleData);
+            const res = await axios.post(`http://localhost:5000/api/v1/addRole?realm=${activeRealm}`, newRoleData);
 
             toast.success(`Role '${roleName}' created successfully`);
 
@@ -97,7 +100,7 @@ const RolesManager = () => {
         const confirmDelete = window.confirm(`Are you sure you want to delete the role '${roleName}'?`);
         if (!confirmDelete) return;
         try {
-            const response = await axios.delete('http://localhost:5000/api/v1/deleteRole', {
+            const response = await axios.delete(`http://localhost:5000/api/v1/deleteRole?realm=${activeRealm}`, {
                 data: {
                         roleName:roleName,
                         id: roleId 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import image from '../assets/lock.png';
 import { useSelector, useDispatch } from 'react-redux';
 import { login } from '../features/Signin';
@@ -6,36 +6,43 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
+import ReCAPTCHA from "react-google-recaptcha";
 
 const SignIn = () => {
   const { isLoggedIn } = useSelector((state) => state.signin);
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [captchaToken, setCaptchaToken] = useState(null); 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  
+  const recaptchaRef = useRef(null); 
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    // 3. Prevent submit if captcha isn't checked
+    if (!captchaToken) {
+      toast.error("Please complete the reCAPTCHA verification!");
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // 1. Call Express login API
+      // 4. Send captchaToken in body
       const response = await axios.post('http://localhost:5000/api/v1/login', {
         email,
         password,
+        captchaToken,
       });
 
       if (response.data?.success) {
-        // 2. Save JWT Token and User Profile in localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('adminUser', JSON.stringify(response.data.user));
-
-        // 3. Set default Authorization Header for all subsequent API requests
         axios.defaults.headers.common['Authorization'] = `Bearer ${response.data.token}`;
-
-        // 4. Update Redux store
         dispatch(login(response.data.user));
 
         toast.success(response.data.message || 'Logged in successfully!', {
@@ -43,7 +50,6 @@ const SignIn = () => {
           autoClose: 3000,
         });
 
-        // 5. Reset inputs & Navigate to Users dashboard
         setEmail('');
         setPassword('');
         navigate('/users');
@@ -59,17 +65,22 @@ const SignIn = () => {
         position: 'top-right',
         autoClose: 3000,
       });
+
+      // 5. Reset captcha on failed login
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     } finally {
       setLoading(false);
     }
   };
 
+  function onChange(value) {
+    setCaptchaToken(value);
+  }
+
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-linear-to-b from-[#6B9DFE] via-[#82B1FF] to-[#A2DBFF] p-4">
-      {/* Main Card Container */}
       <div className="w-full max-w-105 bg-white rounded-3xl p-8 shadow-2xl flex flex-col items-center">
-        
-        {/* Lock Image */}
         <div className="flex justify-center mb-4 mt-2">
           <img
             src={image}
@@ -78,7 +89,6 @@ const SignIn = () => {
           />
         </div>
 
-        {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="font-bold text-3xl text-gray-900 tracking-tight">
             Admin Portal
@@ -88,7 +98,6 @@ const SignIn = () => {
           </span>
         </div>
 
-        {/* Inputs Section */}
         <form onSubmit={submitHandler} className="w-full space-y-5">
           <div>
             <label className="block text-base font-semibold text-gray-900 mb-1.5">
@@ -117,7 +126,6 @@ const SignIn = () => {
                   onChange={(e) => setPassword(e.target.value)}
                 />
 
-                {/* Password Toggle Eye Icon */}
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
@@ -133,14 +141,20 @@ const SignIn = () => {
             </label>
           </div>
 
-          {/* Forgot Password Link */}
-          <div className="text-right pt-1">
-            <span className="text-xs font-semibold text-[#8B88FF] hover:underline hover:cursor-pointer">
-              Forgot Password?
-            </span>
+          {/* ReCAPTCHA */}
+          <div className="flex flex-col items-center gap-2 pt-1">
+            <ReCAPTCHA
+              ref={recaptchaRef}
+              sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "YOUR_SITE_KEY_HERE"}
+              onChange={onChange}
+            />
+            <div className="w-full text-right">
+              <span className="text-xs font-semibold text-[#8B88FF] hover:underline hover:cursor-pointer">
+                Forgot Password?
+              </span>
+            </div>
           </div>
 
-          {/* Sign In Button */}
           <button
             type="submit"
             disabled={loading}
