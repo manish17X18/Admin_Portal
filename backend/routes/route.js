@@ -17,6 +17,8 @@ const {login}=require('../controllers/auth/login')
 
 const { getDashboardStats } = require('../controllers/dashboard_stats/dashboardController');
 
+const { createRealm } = require('../controllers/realms/createRealm');
+const { getRealms } = require('../controllers/realms/getRealms');
 
 router.post('/createUser',createUser)
 router.get('/getusers',getusers)
@@ -33,4 +35,7 @@ router.get('/getAdmins',getAdmins)
 router.post('/login',login)
 
 router.get('/dashboardStats', getDashboardStats);
+
+router.post('/createRealm', createRealm);
+router.get('/getRealm', getRealms);
 module.exports=router
