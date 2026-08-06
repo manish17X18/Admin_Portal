@@ -7,8 +7,11 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { MdDelete, MdOutlineModeEditOutline } from "react-icons/md";
 import axios from 'axios';
+import { RealmContext } from '../components/RealmContext';
+import { useContext } from 'react';
 
 const Users = () => {
+    const { activeRealm } = useContext(RealmContext);
     const [name, setName] = useState('');
     const [isOpen, setIsOpen] = useState(false);
     const [userList, setUserList] = useState([]);
@@ -70,7 +73,7 @@ const Users = () => {
     const fetchUsers = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/v1/getusers');
+            const response = await axios.get(`http://localhost:5000/api/v1/getusers?realm=${activeRealm}`);
             if (response.data?.success) {
                 setUserList(response.data.users);
             }
@@ -85,7 +88,7 @@ const Users = () => {
     // 2. Fetch Keycloak Roles for Dropdown Selection
     const fetchRoles = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/v1/getRoles');
+            const response = await axios.get(`http://localhost:5000/api/v1/getRoles?realm=${activeRealm}`);
             if (response.data?.success) {
                 setRolesList(response.data.roles);
             }
@@ -102,7 +105,7 @@ const Users = () => {
     // 3. Submit New User Handler (POST)
     async function submitHandler(data) {
         try {
-            const response = await axios.post('http://localhost:5000/api/v1/createUser', data);
+            const response = await axios.post(`http://localhost:5000/api/v1/createUser?realm=${activeRealm}`, data);
             if (response.data?.success) {
                 toast.success(response.data.message || "User created successfully!");
                 closeFile();
@@ -124,7 +127,7 @@ const Users = () => {
         if (!editingUser?.id) return;
 
         try {
-            const response = await axios.put('http://localhost:5000/api/v1/editUser', {
+            const response = await axios.put(`http://localhost:5000/api/v1/editUser?realm=${activeRealm}`, {
                 id: editingUser.id,
                 phNo: data.phNo,
                 role: data.role
@@ -165,7 +168,7 @@ const Users = () => {
         if (!confirmDelete) return;
 
         try {
-            const response = await axios.delete('http://localhost:5000/api/v1/deleteUser', {
+            const response = await axios.delete(`http://localhost:5000/api/v1/deleteUser?realm=${activeRealm}`, {
                 data: { id: userId }
             });
 
