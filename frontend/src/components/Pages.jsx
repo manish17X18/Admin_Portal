@@ -8,7 +8,6 @@ import { RealmProvider } from '../components/RealmContext';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Dashboard from './Dashboard';
 import Role from './Role';
-import ProtectedRoute from './ProtectedRoute';
 
 const Pages = () => {
   const location = useLocation();
@@ -22,18 +21,14 @@ const Pages = () => {
         
         <div className="flex-1">
           <Routes>
-            {/* Public Routes */}
+            {/* Direct Routes (Protected wrappers removed) */}
             <Route path="/" element={<Navigate to="/signIn" replace />} />
             <Route path="/signIn" element={<SignIn />} />
-
-            {/* Protected Routes */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/realms" element={<RealmsManager />} />
-              <Route path="/users" element={<Users />} />
-              <Route path="/admins" element={<Admins />} />
-              <Route path="/roles" element={<Role />} />
-            </Route>
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/realms" element={<RealmsManager />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/admins" element={<Admins />} />
+            <Route path="/roles" element={<Role />} />
 
             {/* Fallback Catch-All */}
             <Route path="*" element={<Navigate to="/signIn" replace />} />
