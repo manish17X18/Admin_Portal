@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import api from './api';
 
 export const RealmContext = createContext();
 
@@ -11,7 +12,7 @@ export const RealmProvider = ({ children }) => {
 
     const fetchRealms = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/v1/getRealm');
+            const res = await api.get('/api/v1/getRealm');
             if (res.data?.success) {
                 setRealms(res.data.realms);
             }
