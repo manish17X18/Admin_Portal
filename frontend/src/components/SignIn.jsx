@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import ReCAPTCHA from "react-google-recaptcha";
+import api from './api';
 
 const SignIn = () => {
   const { isLoggedIn } = useSelector((state) => state.signin);
@@ -33,7 +34,7 @@ const SignIn = () => {
 
     try {
       // 4. Send captchaToken in body
-      const response = await axios.post('http://localhost:5000/api/v1/login', {
+      const response = await api.post('/api/v1/login', {
         email,
         password,
         captchaToken,
