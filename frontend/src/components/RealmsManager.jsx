@@ -4,6 +4,7 @@ import { RealmContext } from '../components/RealmContext';
 import { FaPlus, FaGlobe } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import api from './api';
 
 const RealmsManager = () => {
     const { realms, activeRealm, changeActiveRealm, fetchRealms } = useContext(RealmContext);
@@ -20,7 +21,7 @@ const RealmsManager = () => {
 
         try {
             setLoading(true);
-            const res = await axios.post('http://localhost:5000/api/v1/createRealm', {
+            const res = await api.post('/api/v1/createRealm', {
                 realmName: newRealmName.trim()
             });
 
