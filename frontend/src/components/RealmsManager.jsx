@@ -4,7 +4,7 @@ import { RealmContext } from '../components/RealmContext';
 import { FaPlus, FaGlobe } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import api from './api';
+import api from './Api';
 
 const RealmsManager = () => {
     const { realms, activeRealm, changeActiveRealm, fetchRealms } = useContext(RealmContext);

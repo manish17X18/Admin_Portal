@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import api from './api';
+import api from './Api'
 
 const Admins = () => {
     const [searchTerm, setSearchTerm] = useState('');

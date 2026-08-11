@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
 import ReCAPTCHA from "react-google-recaptcha";
-import api from './api';
+import api from './Api';
 
 const SignIn = () => {
   const { isLoggedIn } = useSelector((state) => state.signin);

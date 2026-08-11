@@ -9,7 +9,7 @@ import { MdDelete, MdOutlineModeEditOutline } from "react-icons/md";
 import axios from 'axios';
 import { RealmContext } from '../components/RealmContext';
 import { useContext } from 'react';
-import api from './api';
+import api from './Api';
 
 const Users = () => {
     const { activeRealm } = useContext(RealmContext);

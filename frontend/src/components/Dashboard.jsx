@@ -3,7 +3,7 @@ import { FiBell, FiUsers, FiUserCheck, FiShield, FiActivity } from 'react-icons/
 import { IoChevronDown } from 'react-icons/io5';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import api from "./api";
+import api from "./Api";
 import {
     ResponsiveContainer,
     AreaChart,

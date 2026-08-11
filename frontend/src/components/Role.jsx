@@ -8,7 +8,7 @@ import { MdDelete } from "react-icons/md";
 import axios from 'axios';
 import { RealmContext } from '../components/RealmContext';
 import { useContext } from 'react';
-import api from './api';
+import api from './Api';
 const RolesManager = () => {
     const { activeRealm } = useContext(RealmContext);
 

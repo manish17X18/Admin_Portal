@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
-import api from './api';
+import api from './Api';
 
 export const RealmContext = createContext();
 
