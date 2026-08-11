@@ -3,6 +3,7 @@ import { FiBell, FiUsers, FiUserCheck, FiShield, FiActivity } from 'react-icons/
 import { IoChevronDown } from 'react-icons/io5';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import api from "./api";
 import {
     ResponsiveContainer,
     AreaChart,
@@ -50,7 +51,7 @@ const Dashboard = () => {
         const fetchDashboardData = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get(`http://localhost:5000/api/v1/dashboardStats?realm=${activeRealm}`, {
+                const response = await api.get(`/api/v1/dashboardStats?realm=${activeRealm}`, {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
