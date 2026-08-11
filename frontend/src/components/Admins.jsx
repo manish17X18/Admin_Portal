@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import api from './api';
 
 const Admins = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -38,7 +39,7 @@ const Admins = () => {
     const fetchAdmins = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/v1/getAdmins?realm=master');
+            const response = await api.get('/api/v1/getAdmins?realm=master');
             if (response.data?.success) {
                 setAdminList(response.data.admins || response.data.users || []);
             }
@@ -62,8 +63,8 @@ const Admins = () => {
                 role: 'admin'
             };
 
-            const response = await axios.post('http://localhost:5000/api/v1/createAdmin?realm=master', adminPayload);
-            
+            const response = await api.post('/api/v1/createAdmin?realm=master', adminPayload);
+
             if (response.data?.success) {
                 toast.success(response.data.message || "Admin added successfully!");
                 closeFile();
