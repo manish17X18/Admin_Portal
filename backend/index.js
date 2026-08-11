@@ -17,6 +17,6 @@ const routes=require('./routes/route')
 app.use('/api/v1',routes)
 
 //connect to port
-app.listen(PORT,()=>{
-    console.log(`App connected to port ${PORT} successfully`)
-})
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on ${PORT}`);
+});
