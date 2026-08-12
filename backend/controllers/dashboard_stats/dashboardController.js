@@ -13,11 +13,11 @@ exports.getDashboardStats = async (req, res) => {
 
         // Fetch all realm roles
         const roles = await kcClient.roles.find({ realm });
-        const totalRoles = roles.length;
+        const totalRoles = roles?.length ?? 0;
 
         // Fetch admin users to get actual admin count  
-        const adminUsers = await kcClient.roles.findUsersWithRole({ name: 'admin', realm });
-        const totalAdmins = adminUsers.length;
+        const adminUsers = await kcClient.roles.findUsersWithRole({ name: 'admin', realm })||[];
+        const totalAdmins = adminUsers?.length ?? 0;
 
         //  Calculate Users by Role dynamically
         // Counting how many users belong to each role
@@ -26,7 +26,7 @@ exports.getDashboardStats = async (req, res) => {
                 const usersInRole = await kcClient.roles.findUsersWithRole({ name: role.name, realm });
                 return {
                     name: role.name,
-                    count: usersInRole.length,
+                    count: usersInRole?.length ?? 0,
                 };
             })
         );
