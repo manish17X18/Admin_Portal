@@ -4,7 +4,7 @@ An enterprise-grade Admin Dashboard and User Management Portal built with React,
 
 ---
 ## Dummy Admin
-* Email: Admin@gmail.com
+* Email: admin@gmail.com
 * Password: admin@12345
 
 ---
