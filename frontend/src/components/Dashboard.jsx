@@ -62,7 +62,7 @@ const Dashboard = () => {
 
                     const coloredRoleData = response.data.roleData.map((item, index) => ({
                         ...item,
-                        color: ROLE_COLORS[index % ROLE_COLORS.length]
+                        color: ROLE_COLORS[index % ROLE_COLORS.length] || '#000000'  // Fallback color if not enough colors are defined
                     }));
 
                     setRoleData(coloredRoleData);
