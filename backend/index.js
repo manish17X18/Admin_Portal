@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 
 //middlewares
 app.use(cors({
-    origin:'https://admin-portal-mu-cyan.vercel.app',credentials:true
+    origin:'*',credentials:true
 }));
 app.use(express.json());
 
@@ -17,6 +17,6 @@ const routes=require('./routes/route')
 app.use('/api/v1',routes)
 
 //connect to port
-app.listen(PORT, "0.0.0.0", () => {
+app.listen(PORT, () => {
     console.log(`Server running on ${PORT}`);
 });
