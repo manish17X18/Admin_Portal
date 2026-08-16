@@ -1,0 +1,28 @@
+services:
+
+  keycloak:
+    image: bel-keycloak
+    container_name: bel-keycloak
+    ports:
+      - "8080:8080"
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+
+  backend:
+    image: bel-backend
+    container_name: bel-backend
+    ports:
+      - "4000:4000"
+    depends_on:
+      - keycloak
+    env_file:
+      - ./backend/.env.docker
+
+  frontend:
+    image: bel-frontend
+    container_name: bel-frontend
+    ports:
+      - "5173:4173"
+    depends_on:
+      - backend
