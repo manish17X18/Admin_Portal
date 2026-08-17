@@ -13,23 +13,24 @@ exports.login = async (req, res) => {
         }
 
         // 2. Validate captcha Token
-        if (!captchaToken) {
-            return res.status(400).json({
-                success: false,
-                message: "reCAPTCHA verification token is missing.",
-            });
-        }
+        // if (!captchaToken) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "reCAPTCHA verification token is missing.",
+        //     });
+        // }
 
         // 3. Verify captcha Token with Google
-        const googleVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
-        const googleRes = await axios.post(googleVerifyUrl);
 
-        if (!googleRes.data?.success) {
-            return res.status(400).json({
-                success: false,
-                message: "reCAPTCHA verification failed. Please try again.",
-            });
-        }
+        // const googleVerifyUrl = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`;
+        // const googleRes = await axios.post(googleVerifyUrl);
+
+        // if (!googleRes.data?.success) {
+        //     return res.status(400).json({
+        //         success: false,
+        //         message: "reCAPTCHA verification failed. Please try again.",
+        //     });
+        // }
 
         const kcClient = await getAdminClient();
 
@@ -73,9 +74,11 @@ exports.login = async (req, res) => {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
             });
         } catch (authError) {
+            console.log("KEYCLOAK AUTH ERROR:", authError.response?.data);
+
             return res.status(401).json({
                 success: false,
-                message: authError.message,
+                message: authError.response?.data || authError.message,
             });
         }
 

@@ -1,7 +1,7 @@
 services:
 
   keycloak:
-    image: bel-keycloak
+    build: ./keycloak
     container_name: bel-keycloak
     ports:
       - "8080:8080"
@@ -10,7 +10,7 @@ services:
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
 
   backend:
-    image: bel-backend
+    build: ./backend
     container_name: bel-backend
     ports:
       - "4000:4000"
@@ -20,7 +20,7 @@ services:
       - ./backend/.env.docker
 
   frontend:
-    image: bel-frontend
+    build: ./frontend
     container_name: bel-frontend
     ports:
       - "5173:4173"

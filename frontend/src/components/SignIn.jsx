@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import { IoEyeOutline, IoEyeOffOutline } from "react-icons/io5";
-import ReCAPTCHA from "react-google-recaptcha";
+// import ReCAPTCHA from "react-google-recaptcha";
 import api from './Api';
 
 const SignIn = () => {
@@ -14,21 +14,21 @@ const SignIn = () => {
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [captchaToken, setCaptchaToken] = useState(null); 
+  // const [captchaToken, setCaptchaToken] = useState(null); 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  const recaptchaRef = useRef(null); 
+  // const recaptchaRef = useRef(null); 
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     // 3. Prevent submit if captcha isn't checked
-    if (!captchaToken) {
-      toast.error("Please complete the reCAPTCHA verification!");
-      return;
-    }
+    // if (!captchaToken) {
+    //   toast.error("Please complete the reCAPTCHA verification!");
+    //   return;
+    // }
 
     setLoading(true);
 
@@ -37,7 +37,7 @@ const SignIn = () => {
       const response = await api.post('/api/v1/login', {
         email,
         password,
-        captchaToken,
+        // captchaToken,
       });
 
       if (response.data?.success) {
@@ -68,16 +68,16 @@ const SignIn = () => {
       });
 
       // 5. Reset captcha on failed login
-      recaptchaRef.current?.reset();
-      setCaptchaToken(null);
+      // recaptchaRef.current?.reset();
+      // setCaptchaToken(null);
     } finally {
       setLoading(false);
     }
   };
 
-  function onChange(value) {
-    setCaptchaToken(value);
-  }
+  // function onChange(value) {
+  //   setCaptchaToken(value);
+  // }
 
   return (
     <div className="h-screen w-screen flex items-center justify-center bg-linear-to-b from-[#6B9DFE] via-[#82B1FF] to-[#A2DBFF] p-4">
@@ -143,7 +143,7 @@ const SignIn = () => {
           </div>
 
           {/* ReCAPTCHA */}
-          <div className="flex flex-col items-center gap-2 pt-1">
+          {/* <div className="flex flex-col items-center gap-2 pt-1">
             <ReCAPTCHA
               ref={recaptchaRef}
               sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY || "YOUR_SITE_KEY_HERE"}
@@ -154,7 +154,7 @@ const SignIn = () => {
                 Forgot Password?
               </span>
             </div>
-          </div>
+          </div> */}
 
           <button
             type="submit"
