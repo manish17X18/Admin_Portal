@@ -1,5 +1,4 @@
 services:
-
   keycloak:
     build: ./keycloak
     container_name: bel-keycloak
@@ -8,16 +7,18 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    volumes:
+      - keycloak_data:/opt/keycloak/data
 
   backend:
     build: ./backend
     container_name: bel-backend
     ports:
       - "4000:4000"
-    depends_on:
-      - keycloak
     env_file:
       - ./backend/.env.docker
+    depends_on:
+      - keycloak
 
   frontend:
     build: ./frontend
@@ -26,3 +27,6 @@ services:
       - "5173:4173"
     depends_on:
       - backend
+
+volumes:
+  keycloak_data:
